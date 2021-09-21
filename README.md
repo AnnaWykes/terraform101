@@ -1,3 +1,3 @@
 # Introduction 
-Terraform Demo
+A guide to using Terraform to control cloud deployments
 
