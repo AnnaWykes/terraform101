@@ -1,0 +1,109 @@
+name: "Terraform Demo"
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+jobs:
+- job: Init
+  steps:
+  
+  - task: AzureKeyVault@2
+    inputs:
+      azureSubscription: 'DevAzureSC'
+      KeyVaultName: 'bdldn-demo-terraform-kv'
+      SecretsFilter: '*'
+      RunAsPreJob: false
+
+  - task: TerraformTaskV2@2
+    displayName: Init
+    inputs:
+      provider: 'azurerm'
+      command: 'init'
+      workingDirectory: '$(System.DefaultWorkingDirectory)/azure/terraform/$(env)'
+      backendServiceArm: 'DevAzureSC'
+      backendAzureRmResourceGroupName: 'demoterraformstate'
+      backendAzureRmStorageAccountName: 'bdldnterraformtfstate'
+      backendAzureRmContainerName: 'tfstate'
+      backendAzureRmKey: 'terraform.tfstate'
+  
+- job: Validation
+  dependsOn: Init
+  steps:
+    - task: AzureKeyVault@2
+      inputs:
+          azureSubscription: 'Microsoft Azure Sponsorship(167ab168-84f9-43c4-b197-8bfbf27bf6d1)'
+          KeyVaultName: 'bdldn-demo-terraform-kv'
+          SecretsFilter: '*'
+          RunAsPreJob: false
+    
+    - task: TerraformTaskV2@2
+      displayName: Init
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/azure/terraform/$(env)'
+        backendServiceArm: 'DevAzureSC'
+        backendAzureRmResourceGroupName: 'demoterraformstate'
+        backendAzureRmStorageAccountName: 'bdldnterraformtfstate'
+        backendAzureRmContainerName: 'tfstate'
+        backendAzureRmKey: 'terraform.tfstate'
+    
+    - task: TerraformTaskV2@2
+      displayName: Validate
+      inputs:
+        provider: 'azurerm'
+        command: 'validate'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/azure/terraform/$(env)'
+        backendServiceArm: 'DevAzureSC'
+        backendAzureRmResourceGroupName: 'demoterraformstate'
+        backendAzureRmStorageAccountName: 'bdldnterraformtfstate'
+        backendAzureRmContainerName: 'tfstate'
+        backendAzureRmKey: 'terraform.tfstate'
+
+
+- job: Apply
+  dependsOn: Validation
+  steps:
+    - task: AzureKeyVault@2
+      inputs:
+          azureSubscription: 'Microsoft Azure Sponsorship(167ab168-84f9-43c4-b197-8bfbf27bf6d1)'
+          KeyVaultName: 'bdldn-demo-terraform-kv'
+          SecretsFilter: '*'
+          RunAsPreJob: false
+    
+    - task: TerraformTaskV2@2
+      displayName: Init
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/azure/terraform/$(env)'
+        backendServiceArm: 'DevAzureSC'
+        backendAzureRmResourceGroupName: 'demoterraformstate'
+        backendAzureRmStorageAccountName: 'bdldnterraformtfstate'
+        backendAzureRmContainerName: 'tfstate'
+        backendAzureRmKey: 'terraform.tfstate'
+    
+    - task: TerraformTaskV2@2
+      displayName: Validate
+      inputs:
+        provider: 'azurerm'
+        command: 'validate'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/azure/terraform/$(env)'
+        backendServiceArm: 'DevAzureSC'
+        backendAzureRmResourceGroupName: 'demoterraformstate'
+        backendAzureRmStorageAccountName: 'bdldnterraformtfstate'
+        backendAzureRmContainerName: 'tfstate'
+        backendAzureRmKey: 'terraform.tfstate'
+
+    - task: Bash@3
+      displayName: Apply
+      inputs:
+        targetType: 'inline'
+        script: |
+         cd azure
+         cd terraform 
+         cd dev
+         ls
+         terraform apply -var subscription_id="$(subscription-id)" -var client_id="$(client-id)" -var client_secret="$(client-secret)" -var tenant_id="$(tenant-id)" -var postgresql_pwd="$(postgresql-pwd)" -auto-approve 
+
+
