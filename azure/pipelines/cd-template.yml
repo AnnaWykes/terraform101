@@ -31,7 +31,7 @@ jobs:
   steps:
     - task: AzureKeyVault@2
       inputs:
-          azureSubscription: 'Microsoft Azure Sponsorship(167ab168-84f9-43c4-b197-8bfbf27bf6d1)'
+          azureSubscription: 'DevAzureSC'
           KeyVaultName: 'bdldn-demo-terraform-kv'
           SecretsFilter: '*'
           RunAsPreJob: false
@@ -66,7 +66,7 @@ jobs:
   steps:
     - task: AzureKeyVault@2
       inputs:
-          azureSubscription: 'Microsoft Azure Sponsorship(167ab168-84f9-43c4-b197-8bfbf27bf6d1)'
+          azureSubscription: 'DevAzureSC'
           KeyVaultName: 'bdldn-demo-terraform-kv'
           SecretsFilter: '*'
           RunAsPreJob: false
