@@ -28,7 +28,7 @@ This repo is intended to help you get started using Terraform for Azure. Below i
 2. It is recommended you use VSCode as your IDE, though this is open to preference
 3. Once you have a copy of the repo locally open this in your IDE,  open a terminal window and navigate to databricks/terraform
 4. Terraform will use current Azure account you are logged into and deploy there using your logged in user account, this is diffferent to above where we are using a Service Principle. Consequently, in your terminal run az login (Azure CLI command), and make sure you are logged in, and under the correct Azure instance 
-5. In vars.tf observer all the variables expected: resource_group_name = "terraformDbxResourceGroup"
+5. In vars.tf observer all the variables expected: `resource_group_name`
 `azure_region`, `databricks_name`, `databricks_managed_resource_group_name`, `databricks_sku_name`, `secret_scope_name`, `databricks_token_name`, `cluster_name`
 `spark_version`, `node_type_id`, `autotermination_minutes`, `notebook_path`
 6. For the variables in vars.tf you have a few options on how to provide them. One of the simplest is to create a `terraform.tfvars` file with all values specified (this is a local file that should not be checked in). An example entry would be `cluster_name = "terraformdatabricks-cluster"`
